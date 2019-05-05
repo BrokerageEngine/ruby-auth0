@@ -12,3 +12,5 @@ coverage
 spec/auth0.yml
 .yardoc
 .env
+.idea
+
