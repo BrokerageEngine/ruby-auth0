@@ -23,18 +23,19 @@ module Auth0
         # @return [json] Returns the list of existing users.
         def users(options = {})
           request_params = {
-            per_page:       options.fetch(:per_page, nil),
-            page:           options.fetch(:page, nil),
-            include_totals: options.fetch(:include_totals, nil),
-            sort:           options.fetch(:sort, nil),
-            connection:     options.fetch(:connection, nil),
-            fields:         options.fetch(:fields, nil),
-            include_fields: options.fetch(:include_fields, nil),
-            q:              options.fetch(:q, nil),
-            search_engine:  options.fetch(:search_engine, nil)
+              per_page: options.fetch(:per_page, nil),
+              page: options.fetch(:page, nil),
+              include_totals: options.fetch(:include_totals, nil),
+              sort: options.fetch(:sort, nil),
+              connection: options.fetch(:connection, nil),
+              fields: options.fetch(:fields, nil),
+              include_fields: options.fetch(:include_fields, nil),
+              q: options.fetch(:q, nil),
+              search_engine: options.fetch(:search_engine, nil)
           }
           get(users_path, request_params)
         end
+
         alias get_users users
 
         # Creates a new user according to optional parameters received.
@@ -46,7 +47,7 @@ module Auth0
         #   * :connection [string] The connection the user belongs to.
         # @return [json] Returns the created user.
         def create_user(name, options = {})
-          request_params = Hash[options.map { |(k, v)| [k.to_sym, v] }]
+          request_params = Hash[options.map {|(k, v)| [k.to_sym, v]}]
           request_params[:name] = name
           post(users_path, request_params)
         end
@@ -68,8 +69,8 @@ module Auth0
           raise Auth0::MissingUserId, 'Must supply a valid user_id' if user_id.to_s.empty?
           path = "#{users_path}/#{user_id}"
           request_params = {
-            fields:         fields,
-            include_fields: include_fields
+              fields: fields,
+              include_fields: include_fields
           }
           get(path, request_params)
         end
@@ -105,6 +106,7 @@ module Auth0
           path = "#{users_path}/#{user_id}"
           patch(path, body)
         end
+
         alias update_user patch_user
 
         # Delete a user's multifactor provider
@@ -168,11 +170,11 @@ module Auth0
           raise Auth0::MissingUserId, 'Must supply a valid user_id' if user_id.to_s.empty?
           path = "#{users_path}/#{user_id}/logs"
           request_params = {
-            user_id:        user_id,
-            per_page:       options.fetch(:per_page, nil),
-            page:           options.fetch(:page, nil),
-            include_totals: options.fetch(:include_totals, nil),
-            sort:           options.fetch(:sort, nil)
+              user_id: user_id,
+              per_page: options.fetch(:per_page, nil),
+              page: options.fetch(:page, nil),
+              include_totals: options.fetch(:include_totals, nil),
+              sort: options.fetch(:sort, nil)
           }
           if request_params[:per_page].to_i > 100
             raise Auth0::InvalidParameter, 'The total amount of entries per page should be less than 100'
@@ -183,7 +185,46 @@ module Auth0
           end
           get(path, request_params)
         end
+
         alias get_user_log_events user_logs
+
+
+        def user_roles(user_id)
+          path = "#{users_path}/#{user_id}/roles"
+          get(path)
+
+        end
+
+        def user_remove_roles(user_id, roles = [])
+          path = "#{users_path}/#{user_id}/roles"
+          delete(path, {roles: roles})
+        end
+
+        def user_assign_roles(user_id, roles = [])
+          path = "#{users_path}/#{user_id}/roles"
+          post(path, {roles: roles})
+        end
+
+        def user_permissions(user_id)
+          path = "#{users_path}/#{user_id}/permissions"
+          get(path)
+
+        end
+
+        def user_remove_permissions(user_id, permissions = [])
+          path = "#{users_path}/#{user_id}/permissions"
+          delete(path, {permissions: permissions})
+        end
+
+        def user_assign_permissions(user_id, permissions = [])
+          path = "#{users_path}/#{user_id}/permissions"
+          post(path, {permissions: permissions})
+        end
+
+        # list of permissions for user
+        # remove permissions from user
+        # assign permission to user
+
 
         private
 
