@@ -118,6 +118,21 @@ module Auth0
 
         end
 
+        def role_unassociate_permissions(role_id, permissions = [])
+          path = "#{roles_path}/#{role_id}/permissions"
+          delete(path, {permissions: permissions})
+        end
+
+        def role_associate_permissions(role_id, permissions = [])
+          path = "#{roles_path}/#{role_id}/permissions"
+          post(path, {permissions: permissions})
+        end
+
+        def role_assign_users(role_id, users = [])
+          path = "#{roles_path}/#{role_id}/users"
+          post(path, {users: users})
+        end
+
         def role_users(role_id, options = {})
           request_params = {
               per_page: options.fetch(:per_page, nil),
